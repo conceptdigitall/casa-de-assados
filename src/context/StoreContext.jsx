@@ -91,9 +91,9 @@ export function StoreProvider({ children }) {
         return newOrder;
     };
 
-    const updateOrderStatus = (orderId, status) => {
+    const updateOrderStatus = (orderId, status, reason = null) => {
         setOrders(prev => prev.map(o =>
-            o.id === orderId ? { ...o, status } : o
+            o.id === orderId ? { ...o, status, ...(reason && { cancellationReason: reason }) } : o
         ));
     };
 

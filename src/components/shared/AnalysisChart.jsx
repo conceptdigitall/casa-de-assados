@@ -32,7 +32,25 @@ export default function AnalysisChart({ data, type = 'area', title, color = '#DC
                             <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dy={10} />
                             <Tooltip
                                 cursor={{ fill: 'transparent' }}
-                                contentStyle={{ borderRadius: '0.5rem', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                                content={({ active, payload, label }) => {
+                                    if (active && payload && payload.length) {
+                                        const data = payload[0].payload;
+                                        return (
+                                            <div style={{ backgroundColor: 'white', padding: '0.75rem', borderRadius: '0.5rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', border: 'none' }}>
+                                                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem', color: '#374151' }}>{label}</p>
+                                                <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                                                    Quantidade: <span style={{ fontWeight: 600, color: '#111827' }}>{data.value}</span>
+                                                </p>
+                                                {data.revenue !== undefined && (
+                                                    <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                                                        Valor: <span style={{ fontWeight: 600, color: '#111827' }}>R$ {data.revenue.toFixed(2).replace('.', ',')}</span>
+                                                    </p>
+                                                )}
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
                             />
                             <Bar dataKey="value" fill={color} radius={[4, 4, 0, 0]} />
                         </BarChart>

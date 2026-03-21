@@ -30,5 +30,13 @@ export const products = [
         price: 12.00,
         category: 'Bebidas',
         image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop'
+    },
+    {
+        id: 5,
+        name: 'Marmita Econômica',
+        description: 'Arroz, feijão, frango assado e batata.',
+        price: 18.00,
+        category: 'Marmita',
+        image: 'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&w=600&auto=format&fit=crop'
     }
 ];

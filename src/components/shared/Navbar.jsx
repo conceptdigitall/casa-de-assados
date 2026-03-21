@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingBag } from 'lucide-react';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/fire_theme.jpg';
 import { useCart } from '../../context/CartContext';
 
 export default function Navbar() {
@@ -12,28 +12,30 @@ export default function Navbar() {
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '1rem 2rem',
-            backgroundColor: 'var(--color-surface)',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            backgroundColor: 'rgba(15, 15, 11, 0.95)',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.5)',
             position: 'sticky',
             top: 0,
-            zIndex: 100
+            zIndex: 100,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(8px)'
         }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '1.2rem' }}>
-                <img src={logo} alt="Logo" style={{ height: '40px' }} />
-                <span>Casa dos Assados</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 'bold', fontSize: '1.2rem', color: '#F3F4F6' }}>
+                <img src={logo} alt="Logo" style={{ height: '45px', borderRadius: '4px' }} />
+                <span style={{ fontFamily: 'var(--font-heading)' }}>Casa dos Assados</span>
             </div>
             <div>
                 <button
-                    style={{ position: 'relative' }}
+                    style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer' }}
                     onClick={() => setIsCartOpen(true)}
                 >
-                    <ShoppingBag color="var(--color-secondary)" />
+                    <ShoppingBag color="#F3F4F6" size={24} />
                     {cartCount > 0 && (
                         <span style={{
                             position: 'absolute',
                             top: '-8px',
                             right: '-8px',
-                            backgroundColor: 'var(--color-primary)',
+                            backgroundColor: '#FF4D00',
                             color: 'white',
                             borderRadius: '50%',
                             width: '20px',
@@ -43,7 +45,7 @@ export default function Navbar() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            border: '2px solid white'
+                            border: '2px solid rgba(15, 15, 11, 1)'
                         }}>{cartCount}</span>
                     )}
                 </button>

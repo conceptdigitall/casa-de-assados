@@ -50,6 +50,12 @@ export default function OrdersPage() {
             if (currentStatus === 'Em Preparo') {
                 // Moving to 'Rota de Entrega' -> Open Assignment Modal
                 setSelectedOrderId(orderId);
+                // Pre-fill fee if available from order
+                if (order.deliveryFeeId) {
+                    setSelectedFeeId(order.deliveryFeeId);
+                } else {
+                    setSelectedFeeId('');
+                }
                 setIsAssignModalOpen(true);
                 return;
             }
@@ -94,7 +100,10 @@ export default function OrdersPage() {
         }
 
         if (window.confirm('Tem certeza que deseja cancelar este pedido?')) {
-            updateOrderStatus(orderId, 'Cancelado');
+            const reason = window.prompt('Por qual motivo você está cancelando este pedido?');
+            if (reason) {
+                updateOrderStatus(orderId, 'Cancelado', reason);
+            }
         }
     };
 
@@ -209,14 +218,27 @@ export default function OrdersPage() {
                                     <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Itens do Pedido</h4>
                                     <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                                         {order.items.map((item, idx) => (
-                                            <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.9rem' }}>
-                                                <span><span style={{ fontWeight: 'bold' }}>{item.quantity}x</span> {item.name}</span>
+                                            <li key={idx} style={{ display: 'flex', flexDirection: 'column', marginBottom: '0.5rem', fontSize: '0.9rem', borderBottom: '1px dashed #eee', paddingBottom: '0.25rem' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <span><span style={{ fontWeight: 'bold' }}>{item.quantity}x</span> {item.name}</span>
+                                                </div>
+                                                {item.observation && (
+                                                    <span style={{ fontSize: '0.8rem', color: '#b91c1c', fontStyle: 'italic', marginLeft: '1.5rem' }}>
+                                                        Obs: {item.observation}
+                                                    </span>
+                                                )}
                                             </li>
                                         ))}
                                     </ul>
                                     {order.observation && (
                                         <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px dashed #d1d5db', fontSize: '0.875rem', color: '#dc2626' }}>
                                             <span style={{ fontWeight: 'bold' }}>Obs:</span> {order.observation}
+                                        </div>
+                                    )}
+                                    {order.status === 'Cancelado' && order.cancellationReason && (
+                                        <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #fee2e2', fontSize: '0.875rem', color: '#ef4444', backgroundColor: '#fef2f2', padding: '0.5rem', borderRadius: '0.375rem' }}>
+                                            <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '0.25rem' }}>PEDIDO CANCELADO</span>
+                                            Motivo: {order.cancellationReason}
                                         </div>
                                     )}
                                 </div>

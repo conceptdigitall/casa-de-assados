@@ -1,10 +1,13 @@
 :root {
   /* Colors derived from Logo */
-  --color-primary: #DC2626; /* Vibrant Red/Fire */
+  --color-primary: #DC2626;
+  /* Vibrant Red/Fire */
   --color-primary-dark: #B91C1C;
-  --color-secondary: #171717; /* Deep Black */
-  --color-accent: #F59E0B; /* Golden/Fire Yellow */
-  
+  --color-secondary: #171717;
+  /* Deep Black */
+  --color-accent: #F59E0B;
+  /* Golden/Fire Yellow */
+
   --color-bg: #F9FAFB;
   --color-surface: #FFFFFF;
   --color-text: #1F2937;
@@ -60,5 +63,23 @@ a {
   padding: 0 var(--spacing-md);
 }
 
-.text-primary { color: var(--color-primary); }
-.bg-primary { background-color: var(--color-primary); color: white; }
+.text-primary {
+  color: var(--color-primary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.5rem;
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .hero-section {
+    padding-top: 6rem !important;
+    /* Override inline styles if needed somewhat */
+  }
+}

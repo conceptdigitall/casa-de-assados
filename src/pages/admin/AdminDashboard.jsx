@@ -90,16 +90,27 @@ export default function AdminDashboard() {
 
     // 2. Payment Methods Chart
     const paymentChartData = useMemo(() => {
-        const counts = orders.reduce((acc, order) => {
+        const data = orders.reduce((acc, order) => {
             const method = order.payment.method === 'money' ? 'Dinheiro' :
                 order.payment.method === 'credit' ? 'Crédito' :
                     order.payment.method === 'debit' ? 'Débito' :
                         order.payment.method === 'pix' ? 'Pix' : order.payment.method;
-            acc[method] = (acc[method] || 0) + 1;
+
+            if (!acc[method]) {
+                acc[method] = { count: 0, revenue: 0 };
+            }
+
+            acc[method].count += 1;
+            acc[method].revenue += order.total;
+
             return acc;
         }, {});
 
-        return Object.entries(counts).map(([name, value]) => ({ name, value }));
+        return Object.entries(data).map(([name, stats]) => ({
+            name,
+            value: stats.count,
+            revenue: stats.revenue
+        }));
     }, [orders]);
 
     return (

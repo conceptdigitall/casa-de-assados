@@ -27,49 +27,92 @@ export default function LoginPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#f3f4f6'
+            backgroundColor: '#0f0f0b',
+            backgroundImage: 'radial-gradient(circle at 50% 0%, #2a1005 0%, #0f0f0b 70%)'
         }}>
             <div style={{
-                backgroundColor: 'white',
+                backgroundColor: '#18181b',
                 padding: '2.5rem',
                 borderRadius: '1rem',
-                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+                border: '1px solid rgba(255, 77, 0, 0.2)',
                 width: '100%',
                 maxWidth: '400px'
             }}>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <img src={logo} alt="Logo" style={{ height: '60px', marginBottom: '1rem' }} />
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Área Restrita</h1>
-                    <p style={{ color: '#6b7280' }}>Entre com suas credenciais de administrador</p>
+                    <img src={logo} alt="Logo" style={{ height: '80px', marginBottom: '1.5rem', filter: 'drop-shadow(0 0 10px rgba(255, 77, 0, 0.3))' }} />
+                    <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#f3f4f6' }}>Área Restrita</h1>
+                    <p style={{ color: '#9ca3af', marginTop: '0.5rem' }}>Acesso exclusivo administrativo</p>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>Usuário</label>
+                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem', color: '#d1d5db' }}>Usuário</label>
                         <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #d1d5db' }}
-                            placeholder="admin"
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                borderRadius: '0.5rem',
+                                border: '1px solid #3f3f46',
+                                backgroundColor: '#27272a',
+                                color: 'white',
+                                outline: 'none',
+                                transition: 'all 0.2s'
+                            }}
+                            placeholder="Digite seu usuário"
+                            required
                         />
                     </div>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem' }}>Senha</label>
+                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem', color: '#d1d5db' }}>Senha</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #d1d5db' }}
-                            placeholder="admin"
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                borderRadius: '0.5rem',
+                                border: '1px solid #3f3f46',
+                                backgroundColor: '#27272a',
+                                color: 'white',
+                                outline: 'none',
+                                transition: 'all 0.2s'
+                            }}
+                            placeholder="Digite sua senha"
+                            required
                         />
                     </div>
 
-                    {error && <p style={{ color: '#ef4444', fontSize: '0.875rem' }}>{error}</p>}
+                    {error && (
+                        <div style={{
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                            color: '#ef4444',
+                            padding: '0.75rem',
+                            borderRadius: '0.5rem',
+                            fontSize: '0.875rem',
+                            textAlign: 'center'
+                        }}>
+                            {error}
+                        </div>
+                    )}
 
-                    <Button variant="primary" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+                    <Button
+                        variant="primary"
+                        style={{
+                            justifyContent: 'center',
+                            marginTop: '0.5rem',
+                            backgroundColor: '#FF4D00',
+                            height: '48px',
+                            fontSize: '1rem'
+                        }}
+                    >
                         <Lock size={18} />
-                        Entrar
+                        Acessar Painel
                     </Button>
                 </form>
             </div>

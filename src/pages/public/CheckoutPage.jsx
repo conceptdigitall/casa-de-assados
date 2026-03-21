@@ -8,7 +8,7 @@ import Button from '../../components/shared/Button';
 
 export default function CheckoutPage() {
     const { cartItems, cartTotal, clearCart } = useCart();
-    const { addOrder } = useStore();
+    const { addOrder, deliveryFees } = useStore();
     const navigate = useNavigate();
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
@@ -18,14 +18,25 @@ export default function CheckoutPage() {
 
     // Watch CEP to simulate freight
     const cep = watch('cep');
+    const [selectedFee, setSelectedFee] = useState(null);
+
     useEffect(() => {
-        if (cep && cep.length >= 8) {
-            // Simulate freight calculation
-            setFreight(5.00);
+        if (cep && cep.length >= 8 && deliveryType === 'delivery') {
+            // Simulate freight calculation based on CEP
+            // Simple mock: Last digit odd = expensive, even = cheap
+            const lastDigit = parseInt(cep.replace(/\D/g, '').slice(-1));
+            const fees = deliveryFees || [];
+            if (fees.length > 0) {
+                const feeIndex = lastDigit % fees.length; // Rotate through available fees
+                const fee = fees[feeIndex];
+                setSelectedFee(fee);
+                setFreight(fee.price);
+            }
         } else {
             setFreight(0);
+            setSelectedFee(null);
         }
-    }, [cep]);
+    }, [cep, deliveryType, deliveryFees]);
 
     const onSubmit = (data) => {
         const orderData = {
@@ -42,7 +53,10 @@ export default function CheckoutPage() {
                 change: data.change || 0
             },
             observation: data.observation,
-            type: deliveryType
+            observation: data.observation,
+            type: deliveryType,
+            deliveryFeeId: selectedFee ? selectedFee.id : null,
+            deliveryZone: selectedFee ? selectedFee.name : null
         };
 
         // Use StoreContext to add order

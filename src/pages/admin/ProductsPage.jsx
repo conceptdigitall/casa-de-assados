@@ -19,7 +19,7 @@ export default function ProductsPage() {
         minStock: 5
     });
 
-    const categories = ['Assados', 'Acompanhamentos', 'Bebidas', 'Outros'];
+    const categories = ['Assados', 'Acompanhamentos', 'Bebidas', 'Marmita'];
 
     const handleOpenModal = (product = null) => {
         if (product) {
@@ -78,37 +78,62 @@ export default function ProductsPage() {
                 </Button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                {products.map((product) => (
-                    <div key={product.id} style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-                        <div style={{ height: '150px', position: 'relative' }}>
-                            <img src={product.image || 'https://via.placeholder.com/300x150?text=Sem+Imagem'} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        </div>
-                        <div style={{ padding: '1rem' }}>
-                            <h3 style={{ fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.25rem' }}>{product.name}</h3>
-                            <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem', minHeight: '40px' }}>{product.description}</p>
-                            <p style={{ color: '#9ca3af', fontSize: '0.75rem', marginBottom: '1rem' }}>{product.category}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+                {categories.map(category => {
+                    const categoryProducts = products.filter(p => p.category === category);
+                    // Optional: Show empty categories? Let's show them so user knows where to add
 
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontWeight: 'bold', color: '#dc2626', fontSize: '1.125rem' }}>R$ {product.price.toFixed(2)}</span>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <button
-                                        onClick={() => handleOpenModal(product)}
-                                        style={{ padding: '0.5rem', backgroundColor: '#f3f4f6', borderRadius: '0.375rem', color: '#4b5563', cursor: 'pointer', border: 'none' }}
-                                    >
-                                        <Edit2 size={16} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(product.id)}
-                                        style={{ padding: '0.5rem', backgroundColor: '#fee2e2', borderRadius: '0.375rem', color: '#ef4444', cursor: 'pointer', border: 'none' }}
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
+                    return (
+                        <div key={category}>
+                            <h2 style={{
+                                fontSize: '1.5rem',
+                                fontWeight: 'bold',
+                                color: '#4b5563',
+                                marginBottom: '1.5rem',
+                                borderBottom: '2px solid #e5e7eb',
+                                paddingBottom: '0.5rem'
+                            }}>
+                                {category}
+                            </h2>
+
+                            {categoryProducts.length === 0 ? (
+                                <p style={{ color: '#9ca3af', fontStyle: 'italic' }}>Nenhum produto nesta categoria.</p>
+                            ) : (
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                                    {categoryProducts.map((product) => (
+                                        <div key={product.id} style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+                                            <div style={{ height: '150px', position: 'relative' }}>
+                                                <img src={product.image || 'https://via.placeholder.com/300x150?text=Sem+Imagem'} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            </div>
+                                            <div style={{ padding: '1rem' }}>
+                                                <h3 style={{ fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.25rem' }}>{product.name}</h3>
+                                                <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem', minHeight: '40px' }}>{product.description}</p>
+
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <span style={{ fontWeight: 'bold', color: '#dc2626', fontSize: '1.125rem' }}>R$ {product.price.toFixed(2)}</span>
+                                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                        <button
+                                                            onClick={() => handleOpenModal(product)}
+                                                            style={{ padding: '0.5rem', backgroundColor: '#f3f4f6', borderRadius: '0.375rem', color: '#4b5563', cursor: 'pointer', border: 'none' }}
+                                                        >
+                                                            <Edit2 size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDelete(product.id)}
+                                                            style={{ padding: '0.5rem', backgroundColor: '#fee2e2', borderRadius: '0.375rem', color: '#ef4444', cursor: 'pointer', border: 'none' }}
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
+                            )}
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* Modal */}

@@ -8,13 +8,13 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        return localStorage.getItem('auth_token') === 'simulated-token';
+        return localStorage.getItem('cda_auth_token') === 'simulated-token';
     });
 
     const login = (username, password) => {
         // Simulated credential check
-        if (username === 'admin' && password === 'admin') {
-            localStorage.setItem('auth_token', 'simulated-token');
+        if (username === 'CasaDosAssados' && password === 'Assados@2k26') {
+            localStorage.setItem('cda_auth_token', 'simulated-token');
             setIsAuthenticated(true);
             return true;
         }
@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
     };
 
     const logout = () => {
-        localStorage.removeItem('auth_token');
+        localStorage.removeItem('cda_auth_token');
         setIsAuthenticated(false);
     };
 

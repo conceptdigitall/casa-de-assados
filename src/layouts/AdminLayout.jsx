@@ -3,12 +3,16 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, Package, Settings, LogOut, ClipboardList, PlusCircle, Bike } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
+import { useStore } from '../context/StoreContext';
 
 export default function AdminLayout() {
+    const { orders } = useStore();
     const location = useLocation();
     const navigate = useNavigate();
     const { logout } = useAuth();
     const isActive = (path) => location.pathname === path;
+
+    const pendingCount = orders.filter(o => !['Entregue', 'Pedido retirado', 'Cancelado', 'Finalizado'].includes(o.status)).length;
 
     const handleLogout = () => {
         logout();
@@ -56,10 +60,24 @@ export default function AdminLayout() {
                                     transition: 'background-color 0.2s',
                                     backgroundColor: isActive(item.path) ? 'var(--color-primary)' : 'transparent',
                                     color: isActive(item.path) ? 'white' : '#d1d5db',
-                                    textDecoration: 'none'
+                                    textDecoration: 'none',
+                                    position: 'relative'
                                 }}>
                                     {item.icon}
                                     <span style={{ fontWeight: 500 }}>{item.label}</span>
+                                    {item.label === 'Pedidos' && pendingCount > 0 && (
+                                        <span style={{
+                                            backgroundColor: '#ef4444',
+                                            color: 'white',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 'bold',
+                                            padding: '0.1rem 0.4rem',
+                                            borderRadius: '9999px',
+                                            marginLeft: 'auto'
+                                        }}>
+                                            {pendingCount}
+                                        </span>
+                                    )}
                                 </Link>
                             </li>
                         ))}

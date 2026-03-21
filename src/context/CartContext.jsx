@@ -23,7 +23,7 @@ export function CartProvider({ children }) {
         localStorage.setItem('cart', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const addToCart = (product) => {
+    const addToCart = (product, observation = '') => {
         // Find current stock
         const currentProduct = products.find(p => p.id === product.id);
         const stock = currentProduct ? currentProduct.stock : 0;
@@ -35,15 +35,23 @@ export function CartProvider({ children }) {
                     alert('Quantidade máxima em estoque atingida!');
                     return prev;
                 }
-                return prev.map(item =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
+                return prev.map(item => {
+                    if (item.id === product.id) {
+                        // Append observation if unique
+                        let newObs = item.observation || '';
+                        if (observation && !newObs.includes(observation)) {
+                            newObs = newObs ? `${newObs}; ${observation}` : observation;
+                        }
+                        return { ...item, quantity: item.quantity + 1, observation: newObs };
+                    }
+                    return item;
+                });
             }
             if (stock < 1) {
                 alert('Produto esgotado!');
                 return prev;
             }
-            return [...prev, { ...product, quantity: 1 }];
+            return [...prev, { ...product, quantity: 1, observation }];
         });
         setIsCartOpen(true);
     };

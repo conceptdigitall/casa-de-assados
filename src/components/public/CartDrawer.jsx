@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useStore } from '../../context/StoreContext';
 import Button from '../shared/Button';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ export default function CartDrawer() {
         isCartOpen,
         setIsCartOpen
     } = useCart();
+    const { products } = useStore();
 
     if (!isCartOpen) return null;
 
@@ -59,13 +61,39 @@ export default function CartDrawer() {
                                 <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />
                                 <div style={{ flex: 1 }}>
                                     <h4 style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{item.name}</h4>
+                                    {item.observation && (
+                                        <p style={{ fontSize: '0.75rem', color: '#666', fontStyle: 'italic', marginBottom: '0.25rem' }}>
+                                            Obs: {item.observation}
+                                        </p>
+                                    )}
                                     <p style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
                                         R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
                                     </p>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
                                         <button onClick={() => updateQuantity(item.id, -1)} style={{ padding: '4px', background: '#eee', borderRadius: '4px' }}><Minus size={14} /></button>
                                         <span>{item.quantity}</span>
-                                        <button onClick={() => updateQuantity(item.id, 1)} style={{ padding: '4px', background: '#eee', borderRadius: '4px' }}><Plus size={14} /></button>
+                                        <button
+                                            onClick={() => updateQuantity(item.id, 1)}
+                                            disabled={(() => {
+                                                const currentStock = products.find(p => p.id === item.id)?.stock || 0;
+                                                return item.quantity >= currentStock;
+                                            })()}
+                                            style={{
+                                                padding: '4px',
+                                                background: '#eee',
+                                                borderRadius: '4px',
+                                                opacity: (() => {
+                                                    const currentStock = products.find(p => p.id === item.id)?.stock || 0;
+                                                    return item.quantity >= currentStock ? 0.5 : 1;
+                                                })(),
+                                                cursor: (() => {
+                                                    const currentStock = products.find(p => p.id === item.id)?.stock || 0;
+                                                    return item.quantity >= currentStock ? 'not-allowed' : 'pointer';
+                                                })()
+                                            }}
+                                        >
+                                            <Plus size={14} />
+                                        </button>
                                         <button onClick={() => removeFromCart(item.id)} style={{ marginLeft: 'auto', color: '#ef4444' }}><Trash2 size={16} /></button>
                                     </div>
                                 </div>
