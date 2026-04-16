@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Flame, ArrowRight, Star, Clock, ChevronDown } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { Flame, ArrowRight, Star, Clock, ChevronDown, Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import fireBg from '../../assets/fire_theme.jpg';
@@ -38,6 +38,7 @@ export default function HomePage() {
     const heroBgY = useTransform(scrollY, [0, 600], [0, 120]);
     const [introEnded, setIntroEnded] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const heroVideoRef = useRef(null);
 
     useEffect(() => {
@@ -161,6 +162,12 @@ export default function HomePage() {
                         <button onClick={scrollToMenu} className="hidden md:flex items-center gap-2 bg-brand text-background text-xs font-bold tracking-widest px-4 py-2 uppercase hover:bg-brand-light transition-colors duration-200 cursor-pointer">
                             VER CARDÁPIO
                         </button>
+                        <button
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            className="md:hidden flex items-center text-text-muted hover:text-white transition-colors"
+                        >
+                            <Menu size={24} />
+                        </button>
                     </div>
                 </div>
 
@@ -212,6 +219,68 @@ export default function HomePage() {
 
                 {/* Safe work badge removed per user request */}
             </section>
+
+            {/* Mobile Navigation Drawer */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <div className="fixed inset-0 z-[99999] md:hidden">
+                        <motion.div 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            exit={{ opacity: 0 }} 
+                            transition={{ duration: 0.2 }}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        />
+                        <motion.div 
+                            initial={{ x: '100%' }} 
+                            animate={{ x: 0 }} 
+                            exit={{ x: '100%' }}
+                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                            className="absolute top-0 right-0 bottom-0 w-4/5 max-w-sm bg-[#111111] border-l border-surface-light shadow-2xl flex flex-col p-8"
+                        >
+                            <div className="flex justify-end mb-8">
+                                <button onClick={() => setIsMobileMenuOpen(false)} className="text-text-muted hover:text-white">
+                                    <X size={28} />
+                                </button>
+                            </div>
+                            <nav className="flex flex-col gap-6 items-start">
+                                {NAV_LINKS.map(link => (
+                                    <a
+                                        key={link.label}
+                                        href={`#${link.id}`}
+                                        onClick={(e) => {
+                                            setIsMobileMenuOpen(false);
+                                            scrollToSection(e, link.id);
+                                        }}
+                                        className="text-white text-lg tracking-[0.15em] font-medium transition-colors duration-200 border-b border-surface-light/50 w-full pb-4"
+                                    >
+                                        {link.label}
+                                    </a>
+                                ))}
+                                <button
+                                    onClick={() => {
+                                        setIsMobileMenuOpen(false);
+                                        scrollToMenu();
+                                    }}
+                                    className="text-brand text-lg tracking-[0.15em] font-medium transition-colors duration-200 border-b border-surface-light/50 w-full pb-4 text-left uppercase"
+                                >
+                                    Ver Cardápio
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setIsMobileMenuOpen(false);
+                                        navigate('/login');
+                                    }}
+                                    className="mt-4 w-full bg-brand/10 border border-brand/30 text-brand px-6 py-4 hover:bg-brand/20 hover:text-brand-light text-sm tracking-[0.15em] font-bold uppercase transition-colors duration-200 rounded"
+                                >
+                                    ACESSAR PAINEL ADMIN
+                                </button>
+                            </nav>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {/* ─── DAILY MENU SECTION ───────────────────────────────── */}
             <DailyMenu />

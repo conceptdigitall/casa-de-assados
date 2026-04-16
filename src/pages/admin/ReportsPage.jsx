@@ -164,34 +164,36 @@ export default function ReportsPage() {
                 <div className="p-6 border-b border-zinc-100 flex justify-between items-center">
                     <h3 className="text-sm font-black uppercase tracking-widest text-zinc-900">Resumo de Pagamentos</h3>
                 </div>
-                <table className="w-full text-left">
-                    <thead className="bg-zinc-50 text-[10px] font-black uppercase text-zinc-400">
-                        <tr>
-                            <th className="px-6 py-4">Método</th>
-                            <th className="px-6 py-4 text-center">Transações</th>
-                            <th className="px-6 py-4 text-right">Total Bruto</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-50 text-sm">
-                        {['cartao_credito', 'cartao_debito', 'pix', 'dinheiro'].map(method => {
-                            const methodOrders = orders.filter(o => o.payment?.method === method && o.status !== 'Cancelado');
-                            const total = methodOrders.reduce((acc, o) => acc + o.total, 0);
-                            return (
-                                <tr key={method} className="hover:bg-zinc-50 transition-colors">
-                                    <td className="px-6 py-4 font-bold uppercase text-zinc-600 text-xs">
-                                        {method.replace('_', ' ')}
-                                    </td>
-                                    <td className="px-6 py-4 text-center font-mono">
-                                        {methodOrders.length}
-                                    </td>
-                                    <td className="px-6 py-4 text-right font-black text-zinc-900">
-                                        R$ {total.toFixed(2)}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                <div className="overflow-x-auto w-full custom-scrollbar">
+                    <table className="w-full text-left min-w-[400px]">
+                        <thead className="bg-zinc-50 text-[10px] font-black uppercase text-zinc-400">
+                            <tr>
+                                <th className="px-6 py-4">Método</th>
+                                <th className="px-6 py-4 text-center">Transações</th>
+                                <th className="px-6 py-4 text-right">Total Bruto</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-50 text-sm">
+                            {['cartao_credito', 'cartao_debito', 'pix', 'dinheiro'].map(method => {
+                                const methodOrders = orders.filter(o => o.payment?.method === method && o.status !== 'Cancelado');
+                                const total = methodOrders.reduce((acc, o) => acc + o.total, 0);
+                                return (
+                                    <tr key={method} className="hover:bg-zinc-50 transition-colors">
+                                        <td className="px-6 py-4 font-bold uppercase text-zinc-600 text-xs">
+                                            {method.replace('_', ' ')}
+                                        </td>
+                                        <td className="px-6 py-4 text-center font-mono">
+                                            {methodOrders.length}
+                                        </td>
+                                        <td className="px-6 py-4 text-right font-black text-zinc-900">
+                                            R$ {total.toFixed(2)}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

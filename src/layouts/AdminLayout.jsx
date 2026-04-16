@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Settings, LogOut, ClipboardList, PlusCircle, Bike, Flame, HelpCircle, CalendarDays } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Settings, LogOut, ClipboardList, PlusCircle, Bike, Flame, HelpCircle, CalendarDays, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 
@@ -9,6 +9,7 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout, userRole } = useAuth();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const isActive = (path) => location.pathname === path || (path !== '/admin' && location.pathname.startsWith(path));
 
   const pendingCount = orders.filter(o => !['Entregue', 'Pedido retirado', 'Cancelado', 'Finalizado'].includes(o.status)).length;
@@ -38,12 +39,32 @@ export default function AdminLayout() {
       ];
 
   return (
-    <div className="flex min-h-screen bg-background text-text-primary font-sans">
+    <div className="flex h-screen overflow-hidden bg-background text-text-primary font-sans relative">
+      
+      {/* Mobile Drawer Backdrop */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-[260px] bg-[#111111] border-r border-surface-light flex flex-col shrink-0 relative z-20 shadow-xl">
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-[260px] bg-[#111111] border-r border-surface-light flex flex-col shrink-0 shadow-2xl
+        transform transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
+        md:relative md:translate-x-0
+        ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
         
         {/* Logo Area */}
-        <div className="p-8 flex flex-col gap-1 mb-4">
+        <div className="p-8 flex flex-col gap-1 mb-4 relative">
+          <button 
+            className="md:hidden absolute top-4 right-4 text-text-muted hover:text-white"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          >
+            <X size={20} />
+          </button>
           <div className="flex items-center gap-3">
             <Flame className="text-brand" size={24} strokeWidth={2.5} />
             <h1 className="text-brand-light font-serif tracking-widest text-lg font-bold uppercase leading-none">
@@ -66,6 +87,7 @@ export default function AdminLayout() {
                 <li key={item.path} className="px-4">
                   <Link
                     to={item.path}
+                    onClick={() => setIsMobileSidebarOpen(false)}
                     className={`
                       group flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200
                       ${active 
@@ -116,8 +138,25 @@ export default function AdminLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-background">
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden bg-background h-screen w-full relative z-10">
+        
+        {/* Mobile Top App Bar */}
+        <div className="md:hidden flex items-center justify-between p-4 bg-[#111111] border-b border-surface-light shrink-0 z-20">
+          <div className="flex items-center gap-3">
+            <Flame className="text-brand" size={24} />
+            <h1 className="text-brand-light font-serif tracking-widest text-sm font-bold uppercase leading-none">
+              CASA DE CARNES
+            </h1>
+          </div>
+          <button 
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="text-text-muted hover:text-white transition-colors p-2"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
           <Outlet />
         </div>
       </main>

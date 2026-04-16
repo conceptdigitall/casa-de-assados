@@ -91,7 +91,7 @@ export default function AdminDashboard() {
           <p className="text-brand font-bold tracking-[0.3em] uppercase text-[10px] mb-4 flex items-center gap-2">
             <Flame size={12} /> Visão Financeira
           </p>
-          <h1 className="text-white font-serif text-5xl md:text-7xl leading-none">
+          <h1 className="text-white font-serif text-4xl md:text-7xl leading-none mt-2">
             The<br/><span className="italic text-brand-light">Roast</span> Room.
           </h1>
         </div>
@@ -111,7 +111,9 @@ export default function AdminDashboard() {
                   <option value="quarter">Faturamento (Trimestral)</option>
                   <option value="semester">Faturamento (Semestral)</option>
               </select>
-              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-brand pointer-events-none group-hover:text-white transition-colors" />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <ChevronDown size={14} className="text-brand group-hover:text-white transition-colors" />
+              </div>
           </div>
 
         </div>
@@ -126,9 +128,9 @@ export default function AdminDashboard() {
             
             <div className="relative z-20 p-10 md:p-16 border border-white/10 h-full flex flex-col justify-end min-h-[400px]">
                 <p className="text-white/60 tracking-[0.2em] text-xs font-bold uppercase mb-4">Faturamento Bruto ({stats.timeframeLabel})</p>
-                <div className="flex items-baseline gap-4 mb-8">
-                    <span className="text-brand text-4xl md:text-6xl font-serif">R$</span>
-                    <h2 className="text-white text-6xl md:text-8xl font-serif tracking-tighter">
+                <div className="flex items-baseline gap-2 md:gap-4 mb-8">
+                    <span className="text-brand text-3xl md:text-6xl font-serif">R$</span>
+                    <h2 className="text-white text-5xl sm:text-6xl md:text-8xl font-serif tracking-tighter">
                         {stats.totalRevenue > 0 ? stats.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}
                     </h2>
                 </div>
@@ -159,7 +161,7 @@ export default function AdminDashboard() {
 
             <div className="pt-8 border-t border-surface-light">
                 <p className="text-text-muted tracking-[0.2em] text-[10px] font-bold uppercase mb-4">Giro de Mesa Médio</p>
-                <p className="text-white font-serif text-5xl">58 <span className="text-2xl text-text-muted italic">min</span></p>
+                <p className="text-white font-serif text-4xl md:text-5xl">58 <span className="text-xl md:text-2xl text-text-muted italic">min</span></p>
                 <div className="w-full h-0.5 bg-surface-light mt-6 flex">
                     <div className="w-[60%] h-full bg-brand" />
                 </div>
@@ -214,13 +216,14 @@ export default function AdminDashboard() {
 
         {/* Volume Hierarchy */}
         <div>
-            <div className="flex items-center justify-between pb-4 border-b border-surface-light mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-surface-light mb-8 gap-4">
                 <h3 className="text-2xl text-white font-serif italic">Hierarquia de Produto</h3>
-                <button className="text-text-muted hover:text-white transition-colors"><Download size={18} /></button>
+                <button className="text-text-muted hover:text-white transition-colors flex items-center gap-2 text-xs uppercase tracking-widest"><Download size={14} /> Exportar</button>
             </div>
 
-            <table className="w-full text-left border-collapse">
-                <tbody>
+            <div className="overflow-x-auto w-full custom-scrollbar">
+                <table className="w-full text-left border-collapse min-w-[400px]">
+                    <tbody>
                     {products.slice(0, 4).map((p, i) => {
                         const realSales = stats.allSales.find(s => s.id === p.id);
                         const count = realSales ? realSales.count : 0;
@@ -246,8 +249,9 @@ export default function AdminDashboard() {
                             </tr>
                         );
                     })}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
       </section>
 
