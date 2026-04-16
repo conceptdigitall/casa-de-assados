@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Minus, CreditCard, Banknote, QrCode, Edit, User, FileText, CheckCircle2, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useStore } from '../../context/StoreContext';
 
 const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&q=80&w=400';
@@ -71,12 +72,22 @@ export default function POSPage() {
       nfce: emitNfce ? { issued: true, code: Math.floor(Math.random() * 10000000) } : null
     };
 
-    addOrder(order);
-    alert(emitNfce ? 'NFC-e Emitida e Pedido Processado!' : 'Pedido Processado e Estoque Atualizado!');
-    setCart([]);
-    setCustomer('');
-    setCustomerCpf('');
-    setEmitNfce(false);
+    setIsProcessingNfce(true); // Reusing this for general "processing" state
+    try {
+      const savedOrder = await addOrder(order);
+      
+      if (savedOrder) {
+        alert(emitNfce ? 'NFC-e Emitida e Pedido Processado!' : 'Pedido Processado e Estoque Atualizado!');
+        setCart([]);
+        setCustomer('');
+        setCustomerCpf('');
+        setEmitNfce(false);
+      }
+    } catch (error) {
+       console.error(error);
+    } finally {
+        setIsProcessingNfce(false);
+    }
   };
 
   const categories = ['Todos', 'Assados', 'Acompanhamentos', 'Marmita', 'Bebidas'];

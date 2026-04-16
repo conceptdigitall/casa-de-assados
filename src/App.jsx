@@ -9,6 +9,7 @@ import ProductsPage from './pages/admin/ProductsPage';
 import InventoryPage from './pages/admin/InventoryPage';
 import POSPage from './pages/admin/POSPage';
 import CouriersPage from './pages/admin/CouriersPage';
+import DailyMenuAdminPage from './pages/admin/DailyMenuAdminPage';
 import SettingsPage from './pages/admin/SettingsPage';
 import LoginPage from './pages/admin/LoginPage';
 import CartDrawer from './components/public/CartDrawer';
@@ -44,6 +45,7 @@ function App() {
                   <Route path="inventory" element={<InventoryPage />} />
                   <Route path="pos" element={<POSPage />} />
                   <Route path="couriers" element={<CouriersPage />} />
+                  <Route path="daily-menu" element={<DailyMenuAdminPage />} />
                   <Route path="settings" element={<SettingsPage />} />
                 </Route>
               </Routes>

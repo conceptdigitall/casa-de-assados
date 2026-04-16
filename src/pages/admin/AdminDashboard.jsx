@@ -222,10 +222,9 @@ export default function AdminDashboard() {
             <table className="w-full text-left border-collapse">
                 <tbody>
                     {products.slice(0, 4).map((p, i) => {
-                        // Mock data for top performing items if no real orders
                         const realSales = stats.allSales.find(s => s.id === p.id);
-                        const count = realSales ? realSales.count : ([1248, 856, 412, 190][i] || Math.floor(Math.random() * 100));
-                        const rev = realSales ? realSales.revenue : ([34944.00, 25680.00, 10520.00, 4200.00][i] || (p.price * count));
+                        const count = realSales ? realSales.count : 0;
+                        const rev = realSales ? realSales.revenue : 0;
                         
                         return (
                             <tr key={p.id} className="border-b border-surface/30 group">

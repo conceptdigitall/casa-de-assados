@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Settings, LogOut, ClipboardList, PlusCircle, Bike, Flame, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Settings, LogOut, ClipboardList, PlusCircle, Bike, Flame, HelpCircle, CalendarDays } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 
@@ -33,6 +33,7 @@ export default function AdminLayout() {
         { icon: <ShoppingCart size={18} strokeWidth={2} />, label: 'Pedidos', path: '/admin/orders' },
         { icon: <Package size={18} strokeWidth={2} />, label: 'Produtos', path: '/admin/products' },
         { icon: <Bike size={18} strokeWidth={2} />, label: 'Motoboys', path: '/admin/couriers' },
+        { icon: <CalendarDays size={18} strokeWidth={2} />, label: 'Cardápio Diário', path: '/admin/daily-menu' },
         { icon: <Settings size={18} strokeWidth={2} />, label: 'Ajustes', path: '/admin/settings' },
       ];
 

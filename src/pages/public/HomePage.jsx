@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import fireBg from '../../assets/fire_theme.jpg';
 import MenuSection from '../../components/public/MenuSection';
+import DailyMenu from '../../components/public/DailyMenu';
 import Footer from '../../components/public/Footer';
 import { ShoppingBag } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
@@ -36,6 +37,32 @@ export default function HomePage() {
     const { scrollY } = useScroll();
     const heroBgY = useTransform(scrollY, [0, 600], [0, 120]);
     const [introEnded, setIntroEnded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const heroVideoRef = useRef(null);
+
+    useEffect(() => {
+        const handleLoad = () => {
+            setTimeout(() => {
+                setIsLoading(false);
+                if (heroVideoRef.current) {
+                    heroVideoRef.current.play().catch(e => console.log('Autoplay prevented:', e));
+                }
+            }, 1000);
+        };
+
+        if (document.readyState === 'complete') {
+            handleLoad();
+        } else {
+            window.addEventListener('load', handleLoad);
+        }
+        
+        const fallback = setTimeout(handleLoad, 3000);
+
+        return () => {
+            window.removeEventListener('load', handleLoad);
+            clearTimeout(fallback);
+        };
+    }, []);
 
     const scrollToMenu = () => {
         document.getElementById('menu-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -55,6 +82,13 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-background text-text-primary font-sans">
+            
+            {/* Preloader */}
+            {isLoading && (
+                <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-background pointer-events-none">
+                    <div className="loader"></div>
+                </div>
+            )}
 
             {/* ─── HERO ─────────────────────────────────────────────── */}
             <section id="hero-section" ref={heroRef} className="relative h-screen min-h-[680px] flex flex-col items-center justify-center overflow-hidden bg-black">
@@ -66,8 +100,8 @@ export default function HomePage() {
                 >
                     {/* Intro Video (Plays Once) */}
                     <video
+                        ref={heroVideoRef}
                         src="/videos/video hero.mp4"
-                        autoPlay
                         muted
                         playsInline
                         onEnded={handleIntroEnd}
@@ -106,10 +140,10 @@ export default function HomePage() {
                             </a>
                         ))}
                         <button
-                            onClick={() => navigate('/admin')}
-                            className="text-text-muted hover:text-brand text-xs tracking-[0.15em] font-bold uppercase transition-colors duration-200 cursor-pointer"
+                            onClick={() => navigate('/login')}
+                            className="bg-brand/10 border border-brand/30 text-brand px-5 py-2 hover:bg-brand/20 hover:text-brand-light text-xs tracking-[0.15em] font-bold uppercase transition-colors duration-200 cursor-pointer rounded"
                         >
-                            LOGIN PARA STAFF
+                            LOGIN
                         </button>
                     </nav>
                     <div className="flex items-center gap-6">
@@ -179,31 +213,10 @@ export default function HomePage() {
                 {/* Safe work badge removed per user request */}
             </section>
 
-            {/* ─── MENU SECTION ─────────────────────────────────────── */}
-            <section id="menu-section" className="py-8">
-                {/* Section header */}
-                <div className="max-w-7xl mx-auto px-6 mb-6">
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-surface-light pb-8"
-                    >
-                        <div>
-                            <p className="text-text-muted text-xs tracking-[0.3em] uppercase mb-2">Uma seleção do melhor</p>
-                            <h2 className="font-serif text-4xl md:text-5xl text-white font-bold">O Cardápio<br /> da Brasa</h2>
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                            <div className="flex gap-1">
-                                {[...Array(5)].map((_, i) => <Star key={i} size={12} className="text-brand fill-brand" />)}
-                            </div>
-                            <p className="text-text-muted text-xs tracking-widest uppercase">ESPECIALIDADE DA CASA</p>
-                        </div>
-                    </motion.div>
-                </div>
-                <MenuSection />
-            </section>
+            {/* ─── DAILY MENU SECTION ───────────────────────────────── */}
+            <DailyMenu />
+
+            {/* A seção Story Section agora segue diretamente o Daily Menu */}
 
             {/* ─── STORY SECTION (Cinematic Asymmetric) ───────────────────────────────────── */}
             <section id="story-section" className="relative py-24 lg:py-40 bg-background overflow-hidden border-y border-surface-light">

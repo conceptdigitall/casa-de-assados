@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Flame, Lock, ArrowRight } from 'lucide-react';
+import { Flame, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
@@ -10,22 +10,39 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (login(username, password)) {
-      const role = localStorage.getItem('cda_auth_role');
-      if (role === 'employee') {
-        navigate('/admin/pos');
-      } else {
-        navigate('/admin');
-      }
+    setIsLoading(true);
+    setError('');
+
+    const result = await login(username, password);
+    
+    if (result.success) {
+      // The ProtectedRoute or AuthContext will get the profile role and redirect appropriately based on App routing.
+      // But since we want to route immediately upon success if possible:
+      // Wait, onAuthStateChange in AuthContext will trigger, but navigation can be done after login.
+      // Easiest is to redirect to /admin, and inside Admin/Employee route, ProtectedRoute will do the rest.
+      navigate('/admin');
     } else {
-      setError('Credenciais inválidas');
+      setError(result.error || 'Credenciais inválidas');
     }
+    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-background font-sans overflow-hidden">
+    <div className="min-h-screen w-full flex bg-background font-sans overflow-hidden relative">
+      {/* Back Button */}
+      <div className="absolute top-6 left-6 md:top-10 md:left-10 z-[100]">
+        <button 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-xs font-bold tracking-widest uppercase cursor-pointer bg-black/40 hover:bg-black/80 px-5 py-3 rounded backdrop-blur border border-white/10 shadow-lg"
+        >
+          <ArrowLeft size={16} /> Voltar
+        </button>
+      </div>
+
       {/* Left Column: Image/Brand area */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-end p-16">
         {/* Background Image with overlay gradient */}
@@ -43,11 +60,11 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-lg mb-8">
           <div className="w-12 h-[1px] bg-brand-light opacity-50 mb-6"></div>
           <h1 className="text-white text-5xl md:text-6xl font-serif tracking-tight leading-tight mb-2">
-            The Art of<br/>
-            <span className="text-brand italic font-medium pr-2">Fire & Time</span>
+            A Arte do<br/>
+            <span className="text-brand italic font-medium pr-2">Fogo & Tempo</span>
           </h1>
           <p className="text-text-secondary mt-6 text-lg tracking-wide font-light max-w-sm">
-            A curated gallery where the visceral quality of the flame meets the precision of the blade.
+            Uma galeria onde a qualidade visceral da brasa encontra a precisão do corte.
           </p>
         </div>
       </div>
@@ -65,7 +82,7 @@ export default function LoginPage() {
               </h2>
             </div>
             <p className="text-text-muted text-xs uppercase tracking-[0.15em] font-medium">
-              Management Portal Access
+              Acesso ao Portal de Gestão
             </p>
           </div>
 
@@ -135,10 +152,11 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-brand hover:bg-brand-light text-background font-bold tracking-[0.1em] text-sm uppercase py-4 rounded-lg mt-8 transition-all duration-300 shadow-[0_0_20px_rgba(230,138,92,0.15)] hover:shadow-[0_0_25px_rgba(230,138,92,0.3)] hover:-translate-y-0.5 active:translate-y-0"
+              disabled={isLoading}
+              className={`w-full flex items-center justify-center gap-2 bg-brand hover:bg-brand-light text-background font-bold tracking-[0.1em] text-sm uppercase py-4 rounded-lg mt-8 transition-all duration-300 shadow-[0_0_20px_rgba(230,138,92,0.15)] hover:shadow-[0_0_25px_rgba(230,138,92,0.3)] hover:-translate-y-0.5 active:translate-y-0 ${isLoading ? 'opacity-70 cursor-wait hover:translate-y-0' : ''}`}
             >
-              Acessar Painel
-              <ArrowRight size={16} className="ml-1 opacity-80" />
+              {isLoading ? 'Autenticando...' : 'Acessar Painel'}
+              {!isLoading && <ArrowRight size={16} className="ml-1 opacity-80" />}
             </button>
           </form>
 
