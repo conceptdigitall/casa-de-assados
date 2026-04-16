@@ -51,7 +51,7 @@ export default function CouriersPage() {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-6 mt-4">
+                <div className="flex flex-wrap gap-4 md:gap-6 mt-4">
                     <button
                         onClick={() => setActiveTab('couriers')}
                         className={`pb-4 px-2 font-black text-xs tracking-widest uppercase transition-all border-b-2

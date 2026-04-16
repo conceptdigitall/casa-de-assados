@@ -129,7 +129,7 @@ export default function POSPage() {
             </div>
             
             {/* Category Tabs */}
-            <div className="flex gap-6 border-b border-surface-light w-full overflow-x-auto custom-scrollbar pb-1">
+            <div className="flex gap-3 md:gap-6 border-b border-surface-light w-full flex-wrap pb-2">
               {categories.map((cat) => (
                 <button
                   key={cat}

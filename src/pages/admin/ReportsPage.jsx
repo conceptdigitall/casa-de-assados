@@ -71,7 +71,7 @@ export default function ReportsPage() {
                     <h1 className="text-4xl font-black text-zinc-900 tracking-tighter uppercase">Inteligência de Vendas</h1>
                     <p className="text-zinc-500 font-medium italic">Relatórios consolidados e performance financeira</p>
                 </div>
-                <div className="flex items-center gap-2 bg-white p-1 rounded-xl border border-zinc-200 shadow-sm">
+                <div className="flex flex-wrap items-center gap-2 bg-white p-1 rounded-xl border border-zinc-200 shadow-sm">
                     {[1, 7, 30, 90].map(days => (
                         <button
                             key={days}

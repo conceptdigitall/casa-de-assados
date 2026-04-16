@@ -51,10 +51,10 @@ export default function DailyMenuAdminPage() {
 
     const currentMenu = localMenus[activeTab];
 
-    const inputClasses = "w-full p-2 bg-background border border-surface-light rounded-lg text-text-primary focus:outline-none focus:border-brand/50 transition-colors text-sm";
-    const labelClasses = "block mb-2 text-xs font-bold tracking-widest uppercase text-text-secondary";
-    const sectionClasses = "bg-surface p-6 rounded-xl border border-surface-light mb-8";
-    const sectionTitleClasses = "font-serif text-xl border-b border-surface-light pb-3 mb-6 text-brand";
+    const inputClasses = "w-full px-3 py-1.5 bg-background border border-surface-light rounded text-text-primary focus:outline-none focus:border-brand/50 transition-colors text-xs";
+    const labelClasses = "block mb-1.5 text-[10px] font-bold tracking-widest uppercase text-text-secondary";
+    const sectionClasses = "bg-surface p-4 sm:p-6 rounded-xl border border-surface-light mb-6";
+    const sectionTitleClasses = "font-serif text-lg border-b border-surface-light pb-2 mb-4 text-brand";
 
     const renderEditableList = (listName, title) => {
         if (!currentMenu.hasOwnProperty(listName) && listName !== 'adicionar_depois') return null;
@@ -63,30 +63,30 @@ export default function DailyMenuAdminPage() {
 
         return (
             <div className="mb-8">
-                <div className="flex items-center justify-between border-b border-surface-light pb-2 mb-4">
-                    <h3 className="font-bold text-white uppercase tracking-wider text-sm">{title}</h3>
+                <div className="flex items-center justify-between border-b border-surface-light pb-2 mb-3">
+                    <h3 className="font-bold text-white uppercase tracking-wider text-xs">{title}</h3>
                     <button 
                         onClick={() => addItem(activeTab, listName)}
-                        className="text-brand hover:text-brand-light flex items-center gap-1 text-xs font-bold bg-brand/10 px-2 py-1 rounded"
+                        className="text-brand hover:text-brand-light flex items-center gap-1 text-[10px] font-bold bg-brand/10 px-2 py-1 rounded transition-colors"
                     >
-                        <Plus size={14} /> ADICIONAR
+                        <Plus size={12} /> ADICIONAR
                     </button>
                 </div>
                 
                 {items.length === 0 && <p className="text-text-muted text-sm italic">Nenhum item adicionado.</p>}
                 
-                <div className="space-y-3">
+                <div className="space-y-2">
                     {items.map((item, idx) => (
-                        <div key={idx} className="flex gap-4 items-center">
+                        <div key={idx} className="flex gap-2 items-center flex-wrap sm:flex-nowrap">
                             <input 
                                 type="text"
                                 value={item.name}
                                 onChange={(e) => updateItem(activeTab, listName, idx, 'name', e.target.value)}
-                                className={inputClasses}
+                                className={`${inputClasses} flex-1 min-w-[140px]`}
                                 placeholder="Nome do prato"
                             />
-                            <div className="flex items-center gap-2 w-32 shrink-0">
-                                <span className="text-text-muted">R$</span>
+                            <div className="flex items-center gap-1.5 w-full sm:w-28 shrink-0">
+                                <span className="text-text-muted text-xs">R$</span>
                                 <input 
                                     type="text"
                                     value={item.price}
@@ -97,10 +97,10 @@ export default function DailyMenuAdminPage() {
                             </div>
                             <button 
                                 onClick={() => removeItem(activeTab, listName, idx)}
-                                className="text-danger/60 hover:text-danger p-2 transition-colors"
+                                className="text-danger/60 hover:text-danger p-1.5 transition-colors sm:static absolute right-2"
                                 title="Remover item"
                             >
-                                <Trash2 size={18} />
+                                <Trash2 size={16} />
                             </button>
                         </div>
                     ))}
@@ -111,25 +111,25 @@ export default function DailyMenuAdminPage() {
 
     return (
         <div className="max-w-5xl text-text-primary pb-20">
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-surface-light">
-                <div className="flex items-center gap-4">
-                    <CalendarDays size={32} className="text-brand" />
-                    <h1 className="text-3xl font-serif font-bold text-white uppercase tracking-wide">Cardápio Diário</h1>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-surface-light gap-4">
+                <div className="flex items-center gap-3">
+                    <CalendarDays size={24} className="text-brand" />
+                    <h1 className="text-2xl font-serif font-bold text-white uppercase tracking-wide">Cardápio Diário</h1>
                 </div>
-                <Button variant="primary" onClick={handleSave} className="flex items-center gap-2 shadow-lg shadow-brand/20">
-                    <Save size={20} /> Salvar Alterações Globais
+                <Button variant="primary" onClick={handleSave} className="flex items-center gap-2 shadow-sm text-xs py-2 px-4 w-full sm:w-auto justify-center">
+                    <Save size={16} /> Salvar Alterações
                 </Button>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 mb-8 overflow-x-auto pb-4 custom-scrollbar">
+            <div className="flex gap-2 mb-6 flex-wrap pb-2">
                 {[2, 3, 4, 5, 6, 0].map(day => {
                     const isActive = activeTab === day;
                     return (
                         <button
                             key={day}
                             onClick={() => setActiveTab(day)}
-                            className={`px-5 py-3 rounded-lg text-xs font-bold tracking-widest uppercase transition-all whitespace-nowrap ${
+                            className={`px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all whitespace-nowrap ${
                                 isActive 
                                     ? 'bg-brand text-background shadow drop-shadow' 
                                     : 'bg-surface border border-surface-light text-text-secondary hover:text-white hover:bg-surface-light/50'
@@ -156,18 +156,18 @@ export default function DailyMenuAdminPage() {
                     <>
                         {renderEditableList('especiais', 'Marmitas Especiais')}
                         
-                        <div className="mt-8 pt-8 border-t border-surface-light">
+                        <div className="mt-6 pt-6 border-t border-surface-light">
                             <label className={labelClasses}>Carnes Assadas (Descrição Geral)</label>
                             <input 
                                 type="text"
                                 value={currentMenu.carnesAssadas || ''}
                                 onChange={(e) => updateField(activeTab, 'carnesAssadas', e.target.value)}
-                                className={inputClasses + " mb-4"}
+                                className={inputClasses + " mb-3"}
                             />
                             
                             <label className={labelClasses}>Preço do KG (Carnes Assadas)</label>
-                            <div className="flex items-center gap-2 max-w-[200px]">
-                                <span className="text-text-muted">R$</span>
+                            <div className="flex items-center gap-1.5 max-w-[150px]">
+                                <span className="text-text-muted text-xs">R$</span>
                                 <input 
                                     type="text"
                                     value={currentMenu.precoKg || ''}
@@ -183,18 +183,18 @@ export default function DailyMenuAdminPage() {
                     <>
                         {renderEditableList('marmitas', 'Marmitas')}
                         
-                        <div className="mt-8 pt-8 border-t border-surface-light">
+                        <div className="mt-6 pt-6 border-t border-surface-light">
                             <label className={labelClasses}>Carnes Assadas (Descrição Geral)</label>
                             <input 
                                 type="text"
                                 value={currentMenu.carnesAssadas || ''}
                                 onChange={(e) => updateField(activeTab, 'carnesAssadas', e.target.value)}
-                                className={inputClasses + " mb-4"}
+                                className={inputClasses + " mb-3"}
                             />
                             
                             <label className={labelClasses}>Preço do KG (Carnes Assadas)</label>
-                            <div className="flex items-center gap-2 max-w-[200px] mb-4">
-                                <span className="text-text-muted">R$</span>
+                            <div className="flex items-center gap-1.5 max-w-[150px] mb-3">
+                                <span className="text-text-muted text-xs">R$</span>
                                 <input 
                                     type="text"
                                     value={currentMenu.precoKg || ''}
@@ -204,8 +204,8 @@ export default function DailyMenuAdminPage() {
                             </div>
 
                             <label className={labelClasses}>Preço Frango Assado</label>
-                            <div className="flex items-center gap-2 max-w-[200px]">
-                                <span className="text-text-muted">R$</span>
+                            <div className="flex items-center gap-1.5 max-w-[150px]">
+                                <span className="text-text-muted text-xs">R$</span>
                                 <input 
                                     type="text"
                                     value={currentMenu.frangoAssado || ''}
