@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Plus, Minus, CreditCard, Banknote, QrCode, Edit, User, FileText, CheckCircle2, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Plus, Minus, CreditCard, Banknote, QrCode, Edit, User, FileText, CheckCircle2, Loader2, ShoppingCart, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../../context/StoreContext';
 
 const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&q=80&w=400';
@@ -15,6 +15,18 @@ export default function POSPage() {
   const [customerCpf, setCustomerCpf] = useState('');
   const [isProcessingNfce, setIsProcessingNfce] = useState(false);
   const [nfceSuccess, setNfceSuccess] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Fechar o carrinho no mobile se a tela aumentar e cruzar o breakpoint
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsCartOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const addToCart = (product) => {
     setCart(prev => {
@@ -82,6 +94,7 @@ export default function POSPage() {
         setCustomer('');
         setCustomerCpf('');
         setEmitNfce(false);
+        setIsCartOpen(false);
       }
     } catch (error) {
        console.error(error);
@@ -96,34 +109,45 @@ export default function POSPage() {
     : products.filter(p => p.category === activeCategory);
 
   return (
-    <div className="flex h-screen bg-background text-text-primary overflow-hidden">
+    <div className="flex h-screen bg-background text-text-primary overflow-hidden relative">
       
       {/* Left Area: Product Selection */}
-      <div className="flex-1 flex flex-col pt-8 px-10 border-r border-surface overflow-hidden">
+      <div className="flex-1 flex flex-col pt-4 md:pt-8 px-4 md:px-10 border-r border-surface overflow-hidden w-full">
         
         {/* Header Options */}
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-serif text-white mb-6 tracking-wide">PDV / Caixa</h1>
-            <div className="flex gap-8 border-b border-surface-light w-full">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-4 w-full">
+          <div className="w-full">
+            <div className="flex items-center justify-between w-full mb-4">
+              <h1 className="text-2xl md:text-3xl font-serif text-white tracking-wide">PDV / Caixa</h1>
+              <button 
+                className="md:hidden flex items-center gap-2 bg-brand hover:bg-brand-light text-background px-4 py-2.5 rounded text-xs font-bold uppercase tracking-widest shadow-lg transition-colors"
+                onClick={() => setIsCartOpen(true)}
+              >
+                <ShoppingCart size={16} />
+                <span className="bg-background/20 px-1.5 py-0.5 rounded ml-1">{cart.length}</span>
+              </button>
+            </div>
+            
+            {/* Category Tabs */}
+            <div className="flex gap-6 border-b border-surface-light w-full overflow-x-auto custom-scrollbar pb-1">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`pb-3 text-sm font-semibold tracking-widest uppercase transition-colors relative
+                  className={`pb-3 whitespace-nowrap text-xs md:text-sm font-semibold tracking-widest uppercase transition-colors relative
                     ${activeCategory === cat ? 'text-brand' : 'text-text-secondary hover:text-text-primary'}
                   `}
                 >
                   {cat}
                   {activeCategory === cat && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand"></div>
+                    <motion.div layoutId="pos-active-cat" className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand"></motion.div>
                   )}
                 </button>
               ))}
             </div>
           </div>
 
-          <button className="flex items-center gap-2 bg-surface hover:bg-surface-light text-text-primary px-4 py-2.5 rounded-lg text-sm font-medium transition-colors mb-3">
+          <button className="hidden md:flex items-center justify-center gap-2 bg-surface hover:bg-surface-light text-text-primary px-4 py-2.5 rounded-lg text-sm font-medium transition-colors mb-3 whitespace-nowrap">
             <Edit size={16} className="text-text-muted" />
             Atualizar Estoque
           </button>
@@ -176,14 +200,31 @@ export default function POSPage() {
         </div>
       </div>
 
+      {/* Mobile Drawer Backdrop */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
+            onClick={() => setIsCartOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Right Area: Current Order */}
-      <div className="w-[380px] bg-[#161616] flex flex-col shrink-0">
-        <div className="p-8 flex-1 flex flex-col overflow-hidden">
+      <div className={`
+        fixed inset-y-0 right-0 z-50 w-full max-w-[380px] bg-[#161616] flex flex-col shrink-0 shadow-2xl
+        transform transition-transform duration-300 md:relative md:translate-x-0
+        ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}
+      `}>
+        <div className="p-6 md:p-8 flex-1 flex flex-col overflow-hidden">
           
-          <div className="flex justify-between items-start mb-8">
+          <div className="flex justify-between items-start mb-8 relative">
             <div>
               <h2 className="text-xl font-serif text-white mb-2">Pedido Atual</h2>
-              <div className="flex items-center gap-2 text-xs text-text-muted font-medium">
+              <div className="flex items-center gap-2 text-[10px] md:text-xs text-text-muted font-medium">
                 <User size={12} />
                 <input 
                   type="text" 
@@ -192,10 +233,15 @@ export default function POSPage() {
                   placeholder="Cliente / Mesa"
                   className="bg-transparent border-none outline-none placeholder:text-text-muted/50 w-24 focus:text-white"
                 />
-                <span>• Atend.: Caixa</span>
+                <span className="hidden sm:inline">• Atend.: Caixa</span>
               </div>
             </div>
-            <span className="text-[10px] text-text-muted tracking-widest font-mono">ID: #{Math.floor(Math.random()*10000)}</span>
+            <div className="flex flex-col items-end gap-3">
+              <button className="md:hidden text-text-muted hover:text-white -mr-2" onClick={() => setIsCartOpen(false)}>
+                <X size={24} />
+              </button>
+              <span className="text-[10px] text-text-muted tracking-widest font-mono">ID: #{Math.floor(Math.random()*10000)}</span>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -239,8 +285,8 @@ export default function POSPage() {
         </div>
 
         {/* Footer Payment Block */}
-        <div className="p-8 border-t border-surface/50 bg-[#161616]">
-          <div className="space-y-3 mb-6">
+        <div className="p-6 md:p-8 border-t border-surface/50 bg-[#161616]">
+          <div className="space-y-2 md:space-y-3 mb-4 md:mb-6">
             <div className="flex justify-between text-sm text-text-secondary">
               <span>Subtotal</span>
               <span>R$ {subtotal.toFixed(2)}</span>
