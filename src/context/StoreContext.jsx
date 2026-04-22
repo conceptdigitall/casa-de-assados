@@ -202,13 +202,7 @@ export function StoreProvider({ children }) {
 
     // Settings (Local Storage for now)
     const [settings, setSettings] = useState(() => {
-        try {
-            const saved = localStorage.getItem('store_settings');
-            if (saved) return JSON.parse(saved);
-        } catch (e) {
-            console.error("Error parsing store_settings", e);
-        }
-        return {
+        const defaultSettings = {
             description: "O verdadeiro sabor do churrasco na sua mesa. Carnes selecionadas e preparadas com excelência para você e sua família.",
             contact: {
                 phone: "(11) 99999-9999",
@@ -217,6 +211,21 @@ export function StoreProvider({ children }) {
             },
             hours: { weekdays: "11h às 15h / 18h às 23h", weekend: "11h às 23h" }
         };
+        try {
+            const saved = localStorage.getItem('store_settings');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                return { 
+                    ...defaultSettings, 
+                    ...parsed,
+                    contact: { ...defaultSettings.contact, ...(parsed.contact || {}) },
+                    hours: { ...defaultSettings.hours, ...(parsed.hours || {}) }
+                };
+            }
+        } catch (e) {
+            console.error("Error parsing store_settings", e);
+        }
+        return defaultSettings;
     });
 
     const updateSettings = (newSettings) => {
@@ -256,13 +265,7 @@ export function StoreProvider({ children }) {
 
     // Daily Menus (Local Storage)
     const [dailyMenus, setDailyMenus] = useState(() => {
-        try {
-            const saved = localStorage.getItem('store_daily_menus');
-            if (saved) return JSON.parse(saved);
-        } catch (e) {
-            console.error("Error parsing store_daily_menus", e);
-        }
-        return {
+        const defaultMenus = {
             2: {
                 name: "TERÇA-FEIRA",
                 tradicionais: [
@@ -358,6 +361,21 @@ export function StoreProvider({ children }) {
                 ]
             }
         };
+
+        try {
+            const saved = localStorage.getItem('store_daily_menus');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                const merged = { ...defaultMenus };
+                Object.keys(defaultMenus).forEach(k => {
+                    if (parsed[k]) merged[k] = parsed[k];
+                });
+                return merged;
+            }
+        } catch (e) {
+            console.error("Error parsing store_daily_menus", e);
+        }
+        return defaultMenus;
     });
 
     const updateDailyMenus = (newMenus) => {

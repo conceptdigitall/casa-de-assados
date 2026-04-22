@@ -77,27 +77,27 @@ export default function DailyMenuAdminPage() {
                 
                 <div className="space-y-2">
                     {items.map((item, idx) => (
-                        <div key={idx} className="flex gap-2 items-center flex-wrap sm:flex-nowrap">
+                        <div key={idx} className="flex gap-1 sm:gap-2 items-center">
                             <input 
                                 type="text"
                                 value={item.name}
                                 onChange={(e) => updateItem(activeTab, listName, idx, 'name', e.target.value)}
-                                className={`${inputClasses} flex-1 min-w-[140px]`}
+                                className={`${inputClasses} flex-1 min-w-0`}
                                 placeholder="Nome do prato"
                             />
-                            <div className="flex items-center gap-1.5 w-full sm:w-28 shrink-0">
-                                <span className="text-text-muted text-xs">R$</span>
+                            <div className="flex items-center gap-1 w-24 sm:w-28 shrink-0">
+                                <span className="text-text-muted text-[10px] sm:text-xs">R$</span>
                                 <input 
                                     type="text"
                                     value={item.price}
                                     onChange={(e) => updateItem(activeTab, listName, idx, 'price', e.target.value)}
-                                    className={inputClasses}
+                                    className={`${inputClasses} px-2`}
                                     placeholder="00,00"
                                 />
                             </div>
                             <button 
                                 onClick={() => removeItem(activeTab, listName, idx)}
-                                className="text-danger/60 hover:text-danger p-1.5 transition-colors sm:static absolute right-2"
+                                className="text-danger/60 hover:text-danger p-1.5 transition-colors shrink-0"
                                 title="Remover item"
                             >
                                 <Trash2 size={16} />

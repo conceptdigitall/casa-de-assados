@@ -109,7 +109,7 @@ export default function POSPage() {
     : products.filter(p => p.category === activeCategory);
 
   return (
-    <div className="flex h-screen bg-background text-text-primary overflow-hidden relative">
+    <div className="flex h-full w-full bg-background text-text-primary overflow-hidden relative">
       
       {/* Left Area: Product Selection */}
       <div className="flex-1 flex flex-col pt-4 md:pt-8 px-4 md:px-10 border-r border-surface overflow-hidden w-full">
